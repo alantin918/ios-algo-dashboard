@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/ios-algo-dashboard/',
   plugins: [
     react(),
     tailwindcss(),
