@@ -13,7 +13,9 @@ import {
   EyeOff, 
   Sparkles,
   Smartphone,
-  Info
+  Info,
+  Menu,
+  X
 } from 'lucide-react';
 import { initialAlgorithms } from './data/algorithms';
 
@@ -22,6 +24,7 @@ function App() {
   const [selectedId, setSelectedId] = useState<string>(initialAlgorithms[0].id);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [categoryFilter, setCategoryFilter] = useState<'全部' | '資料結構' | '演算法'>('全部');
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
   
   // Flashcard Mode 狀態
   const [flashcardMode, setFlashcardMode] = useState<boolean>(false);
@@ -121,28 +124,58 @@ function App() {
     // 切換時重置 Flashcard 揭露狀態
     setRevealComplexity(false);
     setRevealCode(false);
+    setMenuOpen(false);
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col md:flex-row">
+    <div className="relative min-h-screen md:h-screen w-full flex flex-col md:flex-row overflow-x-hidden">
       {/* 背景發光裝飾球 */}
       <div className="absolute top-20 left-1/4 w-[500px] h-[500px] bg-glow-purple -z-10 animate-pulse-slow pointer-events-none"></div>
       <div className="absolute bottom-20 right-1/4 w-[600px] h-[600px] bg-glow-blue -z-10 animate-pulse-slow pointer-events-none" style={{ animationDelay: '2s' }}></div>
       <div className="absolute top-1/2 left-2/3 w-[400px] h-[400px] bg-glow-orange -z-10 animate-pulse-slow pointer-events-none" style={{ animationDelay: '4s' }}></div>
 
+      {/* 手機版頂部導覽列 Navbar */}
+      <header className="md:hidden w-full glass-panel border-b border-slate-800/80 px-4 py-3.5 flex items-center justify-between sticky top-0 z-20">
+        <div className="flex items-center gap-2">
+          <div className="p-1 bg-gradient-to-tr from-blue-600 to-purple-600 rounded shadow-md">
+            <Sparkles className="w-4 h-4 text-white" />
+          </div>
+          <span className="text-sm font-bold text-white tracking-tight">iOS Senior 演算法複習</span>
+        </div>
+        <button
+          onClick={() => setMenuOpen(true)}
+          className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-purple-400 hover:text-white transition-all flex items-center gap-1.5"
+        >
+          <Menu className="w-4 h-4" />
+          <span className="text-xs font-semibold">目錄</span>
+        </button>
+      </header>
+
       {/* 左側 Sidebar 側邊導覽列 */}
-      <aside className="w-full md:w-80 glass-panel md:min-h-screen border-b md:border-b-0 md:border-r border-slate-800 flex flex-col z-10 shrink-0">
+      <aside className={`
+        ${menuOpen ? 'fixed inset-0 w-full h-full z-30 bg-[#0b0f19]/95 backdrop-blur-lg flex' : 'hidden md:flex'}
+        w-full md:w-80 glass-panel md:h-full border-b md:border-b-0 md:border-r border-slate-800 flex-col shrink-0 overflow-hidden
+      `}>
         {/* Sidebar Header */}
-        <div className="p-5 border-b border-slate-800/60">
-          <div className="flex items-center gap-2 mb-2">
+        <div className="p-5 border-b border-slate-800/60 flex justify-between items-center">
+          <div className="flex items-center gap-2">
             <div className="p-1.5 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-lg shadow-md">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
-            <h1 className="text-lg font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
-              iOS Senior 面試複習
-            </h1>
+            <div>
+              <h1 className="text-base font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+                iOS Senior 面試複習
+              </h1>
+              <p className="text-[10px] text-slate-400 font-medium">演算法 & 資料結構儀表板</p>
+            </div>
           </div>
-          <p className="text-xs text-slate-400 font-medium">演算法 & 資料結構儀表板</p>
+          {/* 行動版關閉按鈕 */}
+          <button
+            onClick={() => setMenuOpen(false)}
+            className="md:hidden p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
 
         {/* 搜尋與篩選 */}
@@ -177,7 +210,7 @@ function App() {
         </div>
 
         {/* 主題清單 */}
-        <div className="flex-1 overflow-y-auto p-3 space-y-1.5 max-h-[350px] md:max-h-none">
+        <div className="flex-1 overflow-y-auto p-3 space-y-1.5">
           {filteredAlgos.length > 0 ? (
             filteredAlgos.map(algo => (
               <button
@@ -230,7 +263,7 @@ function App() {
       </aside>
 
       {/* 右側 Main Content 主內容區 */}
-      <main className="flex-1 p-5 md:p-8 flex flex-col gap-6 overflow-y-auto max-h-screen">
+      <main className="flex-1 p-5 md:p-8 flex flex-col gap-6 md:overflow-y-auto md:h-full">
         {/* Content Header & Flashcard Mode Controller */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-slate-800/60">
           <div>
